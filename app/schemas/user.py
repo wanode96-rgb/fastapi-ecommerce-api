@@ -17,6 +17,10 @@ class UserLogin(SQLModel):
     email: str
     password: str
 
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
 class Token(SQLModel):
     access_token: str
     token_type: str
