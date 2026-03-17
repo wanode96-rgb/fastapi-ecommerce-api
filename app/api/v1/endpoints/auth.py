@@ -6,7 +6,7 @@ from app.core.db import get_session
 from app.core.security import verify_password, create_access_token
 from app.schemas.user import LoginRequest  # <-- import schema
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(tags=["auth"])
 
 @router.post("/login")
 async def login(request: LoginRequest, session: AsyncSession = Depends(get_session)):
