@@ -7,7 +7,7 @@ class UserCreate(BaseModel):
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
-    role: str
+    is_admin: bool
 
     class Config:
         from_attributes = True
