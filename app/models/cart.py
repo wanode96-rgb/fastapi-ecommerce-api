@@ -20,6 +20,5 @@ class CartItem(SQLModel, table=True):
     quantity: int = Field(default=1, ge=1) # ge=1 ensures quantity is at least 1
 
     # 2. Relationships (The "Magic" part)
-    # This allows you to do: cart_item.product.name
     user: "User" = Relationship(back_populates="cart_items")
-    product: "Product" = Relationship()
+    product: "Product" = Relationship(back_populates="cart_items")
