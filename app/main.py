@@ -4,6 +4,7 @@ from app.core.db import create_db_and_tables
 from app.api.v1.endpoints import auth
 from app.api.v1.endpoints import user
 from app.api.v1.endpoints import product
+from app.api.v1.endpoints import cart
 
 
 @asynccontextmanager
@@ -30,3 +31,6 @@ app.include_router(user.router, prefix="/users")
 
 # Include product router
 app.include_router(product.router, prefix="/products")
+
+# Include cart router
+app.include_router(cart.router, prefix="/cart")
