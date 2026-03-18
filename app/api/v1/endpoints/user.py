@@ -1,12 +1,20 @@
-from fastapi import APIRouter, Depends
-from sqlmodel import Session
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_session
 from app.schemas.user import UserCreate, UserResponse
 from app.crud.crud_user import create_user
 
-router = APIRouter()
+router = APIRouter(tags=["users"])
 
 
 @router.post("/register", response_model=UserResponse)
-def register_user(user: UserCreate, session: Session = Depends(get_session)):
-    return create_user(session, user)
+async def register_user(
+    user: UserCreate,
+    session: AsyncSession = Depends(get_session)
+):
+    new_user = await create_user(session, user)
+
+    if not new_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    return new_user
