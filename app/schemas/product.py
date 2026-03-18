@@ -16,3 +16,9 @@ class ProductResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class ProductUpdate(BaseModel):
+    name: str | None = None
+    description: str | None = None
+    price: float | None = None
+    is_available: bool | None = None
