@@ -1,17 +1,25 @@
-from sqlmodel import Session, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from app.models.user import User
 from app.schemas.user import UserCreate
 from app.core.security import hash_password
 
 
-def get_user_by_email(db: Session, email: str):
-    statement = select(User).where(User.email == email)
-    return db.exec(statement).first()
+async def get_user_by_email(db: AsyncSession, email: str):
+    result = await db.execute(select(User).where(User.email == email))
+    return result.scalar_one_or_none()
 
 
-def create_user(db: Session, user: UserCreate):
+async def create_user(db: AsyncSession, user: UserCreate):
+    # 1. Check existing user
+    existing_user = await get_user_by_email(db, user.email)
+    if existing_user:
+        return None  # handle in endpoint
+
+    # 2. Hash password
     hashed_password = hash_password(user.password)
 
+    # 3. Create user object
     db_user = User(
         email=user.email,
         full_name=user.full_name,
@@ -20,8 +28,9 @@ def create_user(db: Session, user: UserCreate):
         is_admin=False
     )
 
+    # 4. Save to DB
     db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    await db.commit()
+    await db.refresh(db_user)
 
     return db_user
