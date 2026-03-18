@@ -29,3 +29,23 @@ async with session_factory() as session:
     # __aenter__() connects to DB here
     await session.execute(query)
 # __aexit__() disconnects from DB here automatically
+
+
+Python Configuration Classes (The Config Sub-class)
+
+In libraries like Pydantic and SQLModel, the class Config is a special "internal" sub-class used to change how the main class behaves.
+
+1.  class Config in Settings
+
+  - Purpose: Tells Pydantic how to load your secret variables (API keys, Database URLs).
+  - Key Setting: env_file = ".env" (Automates loading from the .env file).
+
+2.  class Config in Schemas
+
+  - Purpose: Tells Pydantic how to read data from a Database Object instead of a Dictionary.
+  - Key Setting: from_attributes = True (Allows converting DB Objects to JSON).
+
+Comparison:
+
+  - Settings Config: Handles INPUT (loading secrets from .env).
+  - Schema Config: Handles OUTPUT (formatting DB data into JSON for the API).
