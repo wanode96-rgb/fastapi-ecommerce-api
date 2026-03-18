@@ -13,14 +13,10 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
-class UserLogin(SQLModel):
-    email: str
-    password: str
-
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
-class Token(SQLModel):
+class Token(BaseModel):
     access_token: str
     token_type: str
