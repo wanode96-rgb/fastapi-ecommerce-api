@@ -9,11 +9,12 @@ DATABASE_URL = settings.DATABASE_URL  # should be like postgresql+asyncpg://user
 
 engine = create_async_engine(DATABASE_URL, echo=True)
 
-# Async session generator
+# Async session factory
 async_session = sessionmaker(
     bind=engine, class_=AsyncSession, expire_on_commit=False
 )
 
+# Async session generator
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session() as session:
         yield session
