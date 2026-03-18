@@ -12,3 +12,10 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# What happens internally
+# When app starts:
+# 1. Settings() is created
+# 2. It reads .env
+# 3. Validates types
+# 4. Stores values in settings
