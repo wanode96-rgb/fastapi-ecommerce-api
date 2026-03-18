@@ -5,6 +5,7 @@ from app.schemas.user import UserCreate, UserResponse
 from app.crud.crud_user import create_user
 from app.core.dependencies import get_current_user, get_current_admin
 from app.models.user import User
+from app.schemas.common import MessageResponse
 
 router = APIRouter(tags=["users"])
 
@@ -27,7 +28,7 @@ async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-@router.get("/admin")
+@router.get("/admin", response_model=MessageResponse)
 async def admin_only(current_user: User = Depends(get_current_admin)):
     """
     Only accessible by users where is_admin is True.
