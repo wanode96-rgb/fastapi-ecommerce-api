@@ -1,0 +1,31 @@
+# --- WHAT IS python-jose? ---
+# 1. Purpose: A library for generating and verifying JSON Web Tokens (JWT).
+# 2. Security: Signs data with a SECRET_KEY to prevent tampering.
+# 3. Components: 
+#    - Header (Algorithm info)
+#    - Payload (User data/Claims)
+#    - Signature (The security seal)
+
+
+# --- WHAT IS A CONTEXT MANAGER? ---
+# 1. Definition: A Python tool that manages a resource (File, DB, Socket).
+# 2. Duty: Guaranteed "Setup" (Open) and "Cleanup" (Close).
+# 3. Security: Prevents memory leaks and locked database connections.
+
+# --- with (Sync Context Manager) ---
+# Usage: Local tasks (Files).
+# Why: Stops everything until the task is done (Blocking).
+
+with open("data.txt", "r") as f:
+    # __enter__() opens file here
+    print(f.read())
+# __exit__() closes file here (Even if an error occurs!)
+
+# --- async with (Async Context Manager) ---
+# Usage: Network tasks (FastAPI, PostgreSQL).
+# Why: Lets other users access the API while waiting (Non-Blocking).
+
+async with session_factory() as session:
+    # __aenter__() connects to DB here
+    await session.execute(query)
+# __aexit__() disconnects from DB here automatically
