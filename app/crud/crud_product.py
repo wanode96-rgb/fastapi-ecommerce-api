@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models.product import Product
 from app.schemas.product import ProductCreate, ProductUpdate
+from sqlalchemy import or_
 
 
 async def create_product(db: AsyncSession, product: ProductCreate):
@@ -15,10 +16,32 @@ async def create_product(db: AsyncSession, product: ProductCreate):
     return db_product
 
 
-async def get_all_products(db: AsyncSession):
-    # This fetches every row from the 'products' table asynchronously
-    result = await db.execute(select(Product))
-    return result.scalars().all()
+async def get_all_products(
+        db: AsyncSession,
+        search: str = None, 
+        min_price: float = None, 
+        max_price: float = None
+        ):
+    # 1. Start with a base query (SELECT * FROM products)
+    query = select(Product)
+    # 2. 🔍 Search Filter (Name or Description)
+    if search:
+        query = query.where(
+            or_(
+                Product.name.ilike(f"%{search}%"),
+                Product.description.ilike(f"%{search}%")
+            )
+        )
+    # 3. 💰 Price Range Filters
+        if min_price is not None:
+            query = query.where(Product.price >= min_price)
+        
+        if max_price is not None:
+            query = query.where(Product.price <= max_price)
+
+        # 4. Execute the final built query
+        result = await db.execute(query)
+        return result.scalars().all()
 
 
 async def update_product(db: AsyncSession, product_id: int, product_data: ProductUpdate):
