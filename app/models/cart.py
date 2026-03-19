@@ -15,8 +15,8 @@ class CartItem(SQLModel, table=True):
     )
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="users.id")
-    product_id: int = Field(foreign_key="products.id")
+    user_id: int = Field(foreign_key="users.id", index=True)
+    product_id: int = Field(foreign_key="products.id", index=True)
     quantity: int = Field(default=1, ge=1) # ge=1 ensures quantity is at least 1
 
     # 2. Relationships (The "Magic" part)
