@@ -22,9 +22,7 @@ async def get_all_products(
         min_price: float = None, 
         max_price: float = None
         ):
-    # 1. Start with a base query (SELECT * FROM products)
     query = select(Product)
-    # 2. 🔍 Search Filter (Name or Description)
     if search:
         query = query.where(
             or_(
@@ -32,16 +30,16 @@ async def get_all_products(
                 Product.description.ilike(f"%{search}%")
             )
         )
-    # 3. 💰 Price Range Filters
-        if min_price is not None:
-            query = query.where(Product.price >= min_price)
         
-        if max_price is not None:
-            query = query.where(Product.price <= max_price)
+    if min_price is not None:
+        query = query.where(Product.price >= min_price)
+        
+    if max_price is not None:
+         query = query.where(Product.price <= max_price)
 
-        # 4. Execute the final built query
-        result = await db.execute(query)
-        return result.scalars().all()
+    result = await db.execute(query)
+    products = result.scalars().all()
+    return products
 
 
 async def update_product(db: AsyncSession, product_id: int, product_data: ProductUpdate):
