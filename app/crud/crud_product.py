@@ -20,7 +20,9 @@ async def get_all_products(
         db: AsyncSession,
         search: str = None, 
         min_price: float = None, 
-        max_price: float = None
+        max_price: float = None,
+        skip: int = 0,
+        limit: int = 10
         ):
     query = select(Product)
     if search:
@@ -30,13 +32,15 @@ async def get_all_products(
                 Product.description.ilike(f"%{search}%")
             )
         )
-        
+
     if min_price is not None:
         query = query.where(Product.price >= min_price)
         
     if max_price is not None:
          query = query.where(Product.price <= max_price)
 
+    query = query.offset(skip).limit(limit)
+    
     result = await db.execute(query)
     products = result.scalars().all()
     return products
