@@ -10,7 +10,7 @@ async def add_to_cart(db: AsyncSession, user_id: int, product_id: int, quantity:
         select(CartItem).where(
             CartItem.user_id == user_id,
             CartItem.product_id == product_id
-        )
+        ).options(selectinload(CartItem.product))
     )
     cart_item = result.scalar_one_or_none()
 
@@ -23,9 +23,17 @@ async def add_to_cart(db: AsyncSession, user_id: int, product_id: int, quantity:
             quantity=quantity
         )
         db.add(cart_item)
+        # For a brand new item, we need to load the product before returning
+        await db.flush() # Send to DB but don't commit yet
+        # Refresh to trigger the selectinload for the new object
+        result = await db.execute(
+            select(CartItem)
+            .where(CartItem.id == cart_item.id)
+            .options(selectinload(CartItem.product))
+        )
+        cart_item = result.scalar_one()
 
     await db.commit()
-    await db.refresh(cart_item)
     return cart_item
 
 # 📦 Get user cart (With Eager Loading)
