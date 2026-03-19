@@ -3,7 +3,7 @@ from typing import Optional, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.cart import CartItem  # Prevents circular import loop
-
+    from app.models.order import Order
 class User(SQLModel, table=True):
     __tablename__ = "users"
     
@@ -15,3 +15,4 @@ class User(SQLModel, table=True):
     is_admin: bool = False
 
     cart_items: List["CartItem"] = Relationship(back_populates="user")
+    orders: List["Order"] = Relationship(back_populates="user")

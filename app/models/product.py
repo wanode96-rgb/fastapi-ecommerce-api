@@ -3,6 +3,7 @@ from typing import Optional, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.cart import CartItem # Prevents circular import
+    from app.models.order import OrderItem
 
 class Product(SQLModel, table=True):
     __tablename__ = "products"
@@ -15,3 +16,4 @@ class Product(SQLModel, table=True):
 
     # This allows you to check: "Which carts contain this product?"
     cart_items: List["CartItem"] = Relationship(back_populates="product")
+    order_items: List["OrderItem"] = Relationship(back_populates="product")
