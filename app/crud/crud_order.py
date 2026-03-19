@@ -36,5 +36,13 @@ async def create_order_from_cart(db: AsyncSession, user_id: int):
         await db.delete(cart_item)  # Clear the cart
 
     await db.commit()
-    await db.refresh(new_order)
-    return new_order
+    
+    # 🔥 THE FIX: Re-fetch the order with all relationships loaded
+    result = await db.execute(
+        select(Order)
+        .where(Order.id == new_order.id)
+        .options(
+            selectinload(Order.items).selectinload(OrderItem.product) # Eager load both levels
+        )
+    )
+    return result.scalar_one()
