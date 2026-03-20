@@ -4,6 +4,7 @@ from typing import Optional, List, TYPE_CHECKING
 if TYPE_CHECKING:
     from app.models.cart import CartItem # Prevents circular import
     from app.models.order import OrderItem
+    from app.models.review import Review
 
 class Product(SQLModel, table=True):
     __tablename__ = "products"

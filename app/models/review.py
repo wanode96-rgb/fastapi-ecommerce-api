@@ -1,6 +1,10 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
+
+if TYPE_CHECKING:
+    from app.models.product import Product
+    from app.models.user import User
 
 class Review(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
