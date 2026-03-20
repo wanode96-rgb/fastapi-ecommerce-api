@@ -6,9 +6,10 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.models.user import User
-from app.models.product import Product
+from app.models.product import Product, Category
 from app.models.cart import CartItem
 from app.models.order import Order
+from app.models.review import Review
 from sqlmodel import SQLModel
 from app.core.config import settings
 
