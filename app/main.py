@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
     print("Application is shutting down...")
 
 # Create FastAPI app with lifespan
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, redirect_slashes=False)
 
 # Root endpoint
 @app.get("/")
