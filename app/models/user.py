@@ -17,4 +17,4 @@ class User(SQLModel, table=True):
 
     orders: List["Order"] = Relationship(back_populates="user")
     cart_items: List["CartItem"] = Relationship(back_populates="user")
-    
+    reviews: list["Review"] = Relationship(back_populates="user")
