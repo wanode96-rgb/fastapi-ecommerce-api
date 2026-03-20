@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from app.schemas.category import CategoryResponse
 
 
 class ProductCreate(BaseModel):
@@ -15,6 +16,8 @@ class ProductResponse(BaseModel):
     description: str
     price: float
     is_available: bool
+    category_id: Optional[int] = None
+    category: Optional[CategoryResponse] = None
 
     class Config:
         from_attributes = True
