@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_session
 from app.schemas.product import ProductCreate, ProductResponse, ProductUpdate, ProductListResponse
 from app.schemas.common import MessageResponse
-from app.crud.crud_product import create_product, get_all_products, update_product, delete_product
+from app.crud.crud_product import create_product, get_all_products, update_product, delete_product, get_product_with_stats
 from app.core.dependencies import get_current_admin, get_current_user
 from typing import Optional
 
@@ -50,6 +50,17 @@ async def list_products(
         "page": current_page,
         "size": len(products)
     }
+
+
+@router.get("/{product_id}/", response_model=ProductResponse)
+async def get_product(
+    product_id: int,
+    session: AsyncSession = Depends(get_session)
+):
+    product = await get_product_with_stats(session, product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
 
 
 # ✅ Update Endpoint (PUT/PATCH)

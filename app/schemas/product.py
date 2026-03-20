@@ -18,7 +18,9 @@ class ProductResponse(BaseModel):
     is_available: bool
     category_id: Optional[int] = None
     category: Optional[CategoryResponse] = None
-
+    average_rating: Optional[float] = 0.0
+    review_count: int = 0
+    
     class Config:
         from_attributes = True
 

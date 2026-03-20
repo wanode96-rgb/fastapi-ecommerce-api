@@ -5,6 +5,7 @@ from app.schemas.product import ProductCreate, ProductUpdate
 from sqlalchemy import or_
 from sqlalchemy.orm import selectinload
 from sqlalchemy import func
+from app.models.review import Review
 
 
 async def create_product(db: AsyncSession, product: ProductCreate):
@@ -63,6 +64,31 @@ async def get_all_products(
     result = await db.execute(query)
     products = result.scalars().all()
     return products, total_count
+
+
+async def get_product_with_stats(db: AsyncSession, product_id: int):
+    # 1. Fetch the Product
+    product_query = select(Product).where(Product.id == product_id).options(selectinload(Product.category))
+    product_result = await db.execute(product_query)
+    product = product_result.scalar_one_or_none()
+
+    if not product:
+        return None
+
+    # 2. 🔥 Calculate Stats from the Review table
+    stats_query = select(
+        func.avg(Review.rating).label("average"),
+        func.count(Review.id).label("count")
+    ).where(Review.product_id == product_id)
+    
+    stats_result = await db.execute(stats_query)
+    stats = stats_result.one() # Returns a tuple (average, count)
+
+    # 3. Attach the stats to the product object before returning
+    product.average_rating = round(stats.average, 1) if stats.average else 0.0
+    product.review_count = stats.count
+
+    return product
 
 
 async def update_product(db: AsyncSession, product_id: int, product_data: ProductUpdate):
