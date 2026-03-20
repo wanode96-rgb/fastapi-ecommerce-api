@@ -22,6 +22,7 @@ async def get_all_products(
         search: str = None, 
         min_price: float = None, 
         max_price: float = None,
+        category_id: int = None,
         skip: int = 0,
         limit: int = 10
         ):
@@ -39,6 +40,9 @@ async def get_all_products(
         
     if max_price is not None:
          query = query.where(Product.price <= max_price)
+    
+    if category_id:
+        query = query.where(Product.category_id == category_id)
 
     query = query.offset(skip).limit(limit)
     
