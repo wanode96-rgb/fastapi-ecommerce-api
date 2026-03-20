@@ -7,6 +7,7 @@ from app.api.v1.endpoints import product
 from app.api.v1.endpoints import cart
 from app.api.v1.endpoints import order
 from app.api.v1.endpoints import category
+from app.api.v1.endpoints import review
 
 
 @asynccontextmanager
@@ -42,3 +43,6 @@ app.include_router(order.router, prefix="/orders")
 
 # Include category router
 app.include_router(category.router, prefix="/categories")
+
+# Include reviews router
+app.include_router(review.router, prefix="/reviews")
