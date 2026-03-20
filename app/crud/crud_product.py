@@ -3,6 +3,7 @@ from sqlalchemy.future import select
 from app.models.product import Product
 from app.schemas.product import ProductCreate, ProductUpdate
 from sqlalchemy import or_
+from sqlalchemy.orm import selectinload
 
 
 async def create_product(db: AsyncSession, product: ProductCreate):
@@ -24,7 +25,7 @@ async def get_all_products(
         skip: int = 0,
         limit: int = 10
         ):
-    query = select(Product)
+    query = select(Product).options(selectinload(Product.category))
     if search:
         query = query.where(
             or_(
