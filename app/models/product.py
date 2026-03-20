@@ -15,6 +15,11 @@ class Product(SQLModel, table=True):
     price: float
     is_available: bool = True
 
+    # Add these as Optional fields
+    # We don't use Field() here because we don't want them to be DB columns
+    average_rating: Optional[float] = None 
+    review_count: Optional[int] = None
+
     # This allows you to check: "Which carts contain this product?"
     cart_items: List["CartItem"] = Relationship(back_populates="product")
     order_items: List["OrderItem"] = Relationship(back_populates="product")
