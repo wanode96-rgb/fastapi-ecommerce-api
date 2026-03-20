@@ -17,3 +17,14 @@ class Product(SQLModel, table=True):
     # This allows you to check: "Which carts contain this product?"
     cart_items: List["CartItem"] = Relationship(back_populates="product")
     order_items: List["OrderItem"] = Relationship(back_populates="product")
+    category_id: Optional[int] = Field(default=None, foreign_key="category.id")
+    category: Optional[Category] = Relationship(back_populates="products")
+    
+
+class Category(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(index=True, unique=True)
+    description: Optional[str] = None
+    
+    # Relationship: One Category -> Many Products
+    products: List["Product"] = Relationship(back_populates="category")
