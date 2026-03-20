@@ -26,6 +26,7 @@ async def list_products(
     search: Optional[str] = None,
     min_price: Optional[float] = None,
     max_price: Optional[float] = None,
+    category_id: Optional[int] = None,
     skip: int = 0,
     limit: int = 10,
     session: AsyncSession = Depends(get_session),
@@ -36,6 +37,7 @@ async def list_products(
         search=search, 
         min_price=min_price, 
         max_price=max_price,
+        category_id=category_id,
         skip = skip,
         limit = limit
         )
