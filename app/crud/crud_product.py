@@ -4,6 +4,7 @@ from app.models.product import Product
 from app.schemas.product import ProductCreate, ProductUpdate
 from sqlalchemy import or_
 from sqlalchemy.orm import selectinload
+from sqlalchemy import func
 
 
 async def create_product(db: AsyncSession, product: ProductCreate):
@@ -27,8 +28,12 @@ async def get_all_products(
         limit: int = 10
         ):
     query = select(Product).options(selectinload(Product.category))
+
+    count_query = select(func.count()).select_from(Product)
+
+    filters = []
     if search:
-        query = query.where(
+        filters.append(
             or_(
                 Product.name.ilike(f"%{search}%"),
                 Product.description.ilike(f"%{search}%")
@@ -36,19 +41,28 @@ async def get_all_products(
         )
 
     if min_price is not None:
-        query = query.where(Product.price >= min_price)
+        filters.append(Product.price >= min_price)
         
     if max_price is not None:
-         query = query.where(Product.price <= max_price)
+         filters.append(Product.price <= max_price)
     
     if category_id:
-        query = query.where(Product.category_id == category_id)
+        filters.append(Product.category_id == category_id)
+
+    if filters:
+        for f in filters:
+            query = query.where(f)
+            count_query = count_query.where(f)
+
+    # 4. Execute Count
+    total_result = await db.execute(count_query)
+    total_count = total_result.scalar()
 
     query = query.offset(skip).limit(limit)
     
     result = await db.execute(query)
     products = result.scalars().all()
-    return products
+    return products, total_count
 
 
 async def update_product(db: AsyncSession, product_id: int, product_data: ProductUpdate):

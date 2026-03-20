@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from app.schemas.category import CategoryResponse
 
 
@@ -27,3 +27,9 @@ class ProductUpdate(BaseModel):
     description: str | None = None
     price: float | None = None
     is_available: bool | None = None
+
+class ProductListResponse(BaseModel):
+    items: List[ProductResponse]
+    total_count: int
+    page: int
+    size: int

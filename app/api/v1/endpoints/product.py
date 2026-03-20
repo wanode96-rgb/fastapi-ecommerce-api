@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_session
-from app.schemas.product import ProductCreate, ProductResponse, ProductUpdate
+from app.schemas.product import ProductCreate, ProductResponse, ProductUpdate, ProductListResponse
 from app.schemas.common import MessageResponse
 from app.crud.crud_product import create_product, get_all_products, update_product, delete_product
 from app.core.dependencies import get_current_admin, get_current_user
@@ -21,7 +21,7 @@ async def create_new_product(
 
 
 # 👤 Any logged-in user
-@router.get("/", response_model=list[ProductResponse])
+@router.get("/", response_model=ProductListResponse)
 async def list_products(
     search: Optional[str] = None,
     min_price: Optional[float] = None,
@@ -32,7 +32,7 @@ async def list_products(
     session: AsyncSession = Depends(get_session),
     _: None = Depends(get_current_user),
 ):
-    return await get_all_products(
+    products, total = await get_all_products(
         session,
         search=search, 
         min_price=min_price, 
@@ -41,6 +41,15 @@ async def list_products(
         skip = skip,
         limit = limit
         )
+    # Calculate current page (CS Logic!)
+    current_page = (skip // limit) + 1
+    
+    return {
+        "items": products,
+        "total_count": total,
+        "page": current_page,
+        "size": len(products)
+    }
 
 
 # ✅ Update Endpoint (PUT/PATCH)
