@@ -6,6 +6,7 @@ from app.api.v1.endpoints import user
 from app.api.v1.endpoints import product
 from app.api.v1.endpoints import cart
 from app.api.v1.endpoints import order
+from app.api.v1.endpoints import category
 
 
 @asynccontextmanager
@@ -38,3 +39,6 @@ app.include_router(cart.router, prefix="/cart")
 
 # Include order router
 app.include_router(order.router, prefix="/orders")
+
+# Include category router
+app.include_router(category.router, prefix="/categories")
