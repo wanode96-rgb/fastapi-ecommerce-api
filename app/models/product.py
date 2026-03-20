@@ -18,8 +18,8 @@ class Product(SQLModel, table=True):
     cart_items: List["CartItem"] = Relationship(back_populates="product")
     order_items: List["OrderItem"] = Relationship(back_populates="product")
     category_id: Optional[int] = Field(default=None, foreign_key="category.id")
-    category: Optional[Category] = Relationship(back_populates="products")
-    reviews: list["Review"] = Relationship(back_populates="product")
+    category: Optional["Category"] = Relationship(back_populates="products")
+    reviews: List["Review"] = Relationship(back_populates="product")
     
 
 class Category(SQLModel, table=True):

@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from app import models
 
 from app.api.v1.endpoints import auth
 from app.api.v1.endpoints import user
