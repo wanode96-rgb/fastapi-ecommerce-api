@@ -1,10 +1,12 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class ProductCreate(BaseModel):
     name: str
     description: str
     price: float
+    category_id: Optional[int] = None
 
 
 class ProductResponse(BaseModel):
