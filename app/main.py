@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.core.db import create_db_and_tables
+
 from app.api.v1.endpoints import auth
 from app.api.v1.endpoints import user
 from app.api.v1.endpoints import product
@@ -13,10 +13,12 @@ from app.api.v1.endpoints import review
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup code
-    await create_db_and_tables()
+    # await create_db_and_tables()
+    print("Application is starting up...")
     yield
     # Shutdown code (optional)
     # e.g., close DB connections
+    print("Application is shutting down...")
 
 # Create FastAPI app with lifespan
 app = FastAPI(lifespan=lifespan)
