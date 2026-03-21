@@ -84,11 +84,18 @@ async def get_product_with_stats(db: AsyncSession, product_id: int):
     stats_result = await db.execute(stats_query)
     stats = stats_result.one() # Returns a tuple (average, count)
 
-    # 3. Attach the stats to the product object before returning
-    product.average_rating = round(stats.average, 1) if stats.average else 0.0
-    product.review_count = stats.count
+    # 3. Create a dictionary to merge the data
+    # This prevents the "object has no attribute" error we had earlier
+    product_data = product.model_dump()
+    
+    # Manually add the category back if it exists (since model_dump might miss relationship objects)
+    product_data["category"] = product.category 
+    
+    # Inject the fresh stats
+    product_data["average_rating"] = round(stats.average, 1) if stats.average else 0.0
+    product_data["review_count"] = stats.count
 
-    return product
+    return product_data # Return the dict; FastAPI will validate it against ProductResponse
 
 
 async def update_product(db: AsyncSession, product_id: int, product_data: ProductUpdate):
