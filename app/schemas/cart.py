@@ -24,10 +24,13 @@ class CartResponse(BaseModel):
         from_attributes = True
 
 
-    class CartListResponse(BaseModel):
-        items: List[CartResponse]
-        
-        @computed_field
-        @property
-        def total_price(self) -> float:
-            return sum(item.subtotal for item in self.items)
+class CartListResponse(BaseModel):
+    items: List[CartResponse]
+
+    @computed_field
+    @property
+    def total_price(self) -> float:
+        return sum(item.subtotal for item in self.items)
+            
+            
+            
